@@ -1,5 +1,6 @@
 <?php
 namespace App\Services;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -13,7 +14,7 @@ class LoginService{
                 $result['message'] = 'Почта не существует';
                 break;
             }
-            if (!Hash::check($password,$user->password)){
+           if (!Hash::check($password,$user->password)){
                 $result['message'] = 'Не совпадает пароль';
                 break;
             }
@@ -21,7 +22,7 @@ class LoginService{
             $user->token = $token;
             $user->save();
             $result['success'] = true;
-            $result['token'] = $token;
+            $result['data'] = UserResource::collection(User::where('id',$user->id)->get());
         }while(false);
         return $result;
     }
